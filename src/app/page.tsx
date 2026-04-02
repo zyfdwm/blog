@@ -22,7 +22,7 @@ export default function HomePage() {
             "@context": "https://schema.org",
             "@type": "WebSite",
             "name": "Zyf - Exploring SEO & Digital Growth",
-            "url": "/",
+            "url": "https://zyfspace.pages.dev",
             "description": "Talking about Digital Marketing, SEO, Paid Channel, and How Business Growth through Digital",
             "author": {
               "@type": "Person",

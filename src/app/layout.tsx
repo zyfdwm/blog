@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://yourdomain.com'),
+  metadataBase: new URL('https://zyfspace.pages.dev'),
   title: {
     default: 'Zyf - Exploring SEO & Digital Growth',
     template: '%s - Exploring SEO & Digital Growth ·',
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Zyf - Exploring SEO & Digital Growth',
     description: 'Talking about Digital Marketing, SEO, Paid Channel, and How Business Growth through Digital',
-    url: 'https://yourdomain.com',
+    url: 'https://zyfspace.pages.dev',
     siteName: 'Zyf Blog',
     locale: 'id_ID',
     type: 'website',
