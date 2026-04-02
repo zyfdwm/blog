@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       title: post.title,
       description: post.description,
-      url: `https://yourdomain.com/blog/${slug}`,
+      url: `https://zyfspace.pages.dev/blog/${slug}`,
       type: 'article',
       publishedTime: post.date,
       authors: ['Zyf'],
@@ -55,7 +55,7 @@ export default async function PostPage({ params }: Props) {
       "@type": "Person",
       "name": "Zyf"
     },
-    "url": `https://yourdomain.com/blog/${slug}`
+    "url": `https://zyfspace.pages.dev/blog/${slug}`
   }
 
   return (
