@@ -38,8 +38,11 @@ export function getAllPosts(): PostMeta[] {
     .filter((f) => f.endsWith('.md'))
     .map((file) => {
       const slug = file.replace(/\.md$/, '')
-      const raw = fs.readFileSync(path.join(postsDir, file), 'utf8')
+      const filePath = path.join(postsDir, file)
+      const raw = fs.readFileSync(filePath, 'utf8')
       const { data, content } = matter(raw)
+      const stats = fs.statSync(filePath)
+      
       return {
         slug,
         title: data.title ?? 'Untitled',
@@ -47,9 +50,14 @@ export function getAllPosts(): PostMeta[] {
         description: data.description ?? '',
         tags: Array.isArray(data.tags) ? data.tags : [],
         readingTime: calcReadingTime(content),
-      }
+        birthtime: stats.birthtimeMs,
+      } as PostMeta & { birthtime: number }
     })
-    .sort((a, b) => (a.date < b.date ? 1 : -1))
+    .sort((a, b) => {
+      if (a.date < b.date) return 1
+      if (a.date > b.date) return -1
+      return b.birthtime - a.birthtime
+    })
 }
 
 export function getPost(slug: string): Post {
