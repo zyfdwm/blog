@@ -26,7 +26,7 @@ Jujur, belum punya rencana panjang. Tapi beberapa topik yang muter di kepala:
 
 ## Soal Frekuensi
 
-Nggak ada janji bakal rutin. Gue lebih suka nulis kalau ada sesuatu yang benar-benar pengen gue tulis, daripada nulis karena ngerasa "harus".
+Gue sendiri nggak janji bakal rutin. Gue lebih suka nulis kalau ada sesuatu yang benar-benar pengen gue tulis, daripada nulis karena ngerasa "harus".
 
 Quality over quantity. Atau setidaknya, *intentional* over *obligatory*.
 
