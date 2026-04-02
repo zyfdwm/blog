@@ -1,7 +1,7 @@
 ---
-title: "Halo Dunia - Zyf Here!"
+title: "Artikel Ketiga"
 date: "2026-04-02"
-description: "Artikel pertama di blog ini. Sedikit cerita tentang kenapa gue bikin ini dan apa yang bakal gue tulis ke depannya."
+description: "Ini si artikel ketiga gue ya."
 tags: ["personal", "intro"]
 ---
 Ini artikel ketiga gue, yang mana ini gue buat pake bantuan dari *[stackedit.io](https://stackedit.io)* yang merupakan salah satu ***markdown editor***.
