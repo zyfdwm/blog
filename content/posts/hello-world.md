@@ -1,5 +1,5 @@
 ---
-title: "Halo Dunia - Zyf Here!"
+title: "Hello World - Zyf Here!"
 date: "2026-04-02"
 description: "Artikel pertama di blog ini. Sedikit cerita tentang kenapa gue bikin ini dan apa yang bakal gue tulis ke depannya."
 tags: ["personal", "intro"]
