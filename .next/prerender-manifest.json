@@ -1,1 +1,11 @@
-{"version":4,"routes":{"/halo-dunia":{},"/posting-kedua":{}},"dynamicRoutes":{"/[slug]":{"dataRoute":null,"dataRouteRegex":null,"fallback":null,"fallbackRevalidate":false,"fallbackSourceRoute":"/[slug]","routeRegex":"^\\/([^/]+?)(?:\\/)?$","allowHeader":[]}},"notFoundRoutes":[],"preview":{"previewModeId":"e8a58605e864fa9ccfbd802f8cfec6a9","previewModeSigningKey":"14f89c20e339ac3cb585ca74864711e3827384b3d63583074ad4124d57b442b9","previewModeEncryptionKey":"37da3e74b4ef21b6e0650dac4a24ba8c100826a812fa9a707aa388d0d4e18808"}}
+{
+  "version": 4,
+  "routes": {},
+  "dynamicRoutes": {},
+  "notFoundRoutes": [],
+  "preview": {
+    "previewModeId": "86016af657f83904368d8042408ab89e",
+    "previewModeSigningKey": "31448d9717d3ae3a860f1efd234ad56065679b06e0c09c836175dbc78d12d36c",
+    "previewModeEncryptionKey": "740e8cfe4b765d0319bc201c8cf1cad93c238ab2fd562f9174bfb384ad02655d"
+  }
+}
