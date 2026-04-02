@@ -10,7 +10,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return [
     { url: baseUrl, lastModified: new Date() },
     ...posts.map((post) => ({
-      url: `${baseUrl}/blog/${post.slug}`,
+      url: `${baseUrl}/${post.slug}`,
       lastModified: post.date ? new Date(post.date) : new Date(),
     })),
   ]

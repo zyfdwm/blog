@@ -40,7 +40,7 @@ export default function HomePage() {
           </div>
         ) : (
           posts.map((post) => (
-            <a key={post.slug} href={`/blog/${post.slug}`} className="post-card">
+            <a key={post.slug} href={`/${post.slug}`} className="post-card">
               <div className="post-card__meta">
                 {post.date && (
                   <span className="post-card__date">{formatDate(post.date)}</span>
