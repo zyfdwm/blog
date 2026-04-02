@@ -5,7 +5,7 @@ backend:
   name: github
   repo: zyfdwm/blog   # ← ganti ini
   branch: main
-  base_url: https://sveltia-cms-auth.faizxdwm.workers.dev/  # ← ganti ini (lihat README)
+  base_url: https://sveltia-cms-auth.faizxdwm.workers.dev  # ← ganti ini (lihat README)
 
 # Uncomment buat local dev (jalanin: npx decap-server)
 # local_backend: true
