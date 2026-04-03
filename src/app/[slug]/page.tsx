@@ -7,9 +7,9 @@ import NotionBlocks from '@/components/NotionBlocks'
 const notionClient = notion as Client
 
 type Props = {
-  params: {
+  params: Promise<{
     slug: string
-  }
+  }>
 }
 
 async function getPostBySlug(slug: string) {
@@ -102,7 +102,9 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const post = await getPostBySlug(params.slug)
+  const { slug } = await params
+  const post = await getPostBySlug(slug)
+
   if (!post) return {}
 
   const title = getPlainTextFromTitle(post)
@@ -114,12 +116,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title,
     description,
     alternates: {
-      canonical: `/blog/${params.slug}`,
+      canonical: `/${slug}`,
     },
     openGraph: {
       title,
       description,
-      url: `https://zyfspace.pages.dev/blog/${params.slug}`,
+      url: `https://zyfspace.pages.dev/${slug}`,
       type: 'article',
       publishedTime: date,
       authors: ['Zyf'],
@@ -134,7 +136,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function PostPage({ params }: Props) {
-  const post = await getPostBySlug(params.slug)
+  const { slug } = await params
+  const post = await getPostBySlug(slug)
+
   if (!post) notFound()
 
   const blocks = await getBlockChildrenRecursively(post.id)
@@ -154,7 +158,7 @@ export default async function PostPage({ params }: Props) {
       '@type': 'Person',
       name: 'Zyf',
     },
-    url: `https://zyfspace.pages.dev/blog/${params.slug}`,
+    url: `https://zyfspace.pages.dev/${slug}`,
     keywords: tags.join(', '),
   }
 
@@ -191,7 +195,11 @@ export default async function PostPage({ params }: Props) {
 
           <div className="article-meta">
             {date && <span>{date}</span>}
-            {date && <span className="article-meta-dot" aria-hidden />}
+            {date && (
+              <span className="article-meta-dot" aria-hidden>
+                •
+              </span>
+            )}
             <span>5 menit baca</span>
           </div>
         </header>
