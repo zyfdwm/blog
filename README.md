@@ -1,4 +1,4 @@
-# My Blog
+<!-- # My Blog
 
 Blog pribadi dengan Next.js 15, Decap CMS, dan deploy ke Cloudflare Pages.
 
@@ -178,4 +178,4 @@ Edit `src/app/globals.css` → CSS variables di bagian `:root`.
 │       ├── posts.ts    ← Utility baca file .md
 │       └── markdown.ts ← Convert markdown ke HTML
 └── next.config.ts      ← Static export config
-```
+``` -->
