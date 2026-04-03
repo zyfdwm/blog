@@ -33,7 +33,7 @@ export default async function HomePage() {
     <div className="container">
       <div className="home-hero">
         <h1 className="home-hero__title">
-          Talking about SEO, Digital Marketing, and How Business Growth Better.
+          Talking about SEO, Tech, Digital Marketing, and How Business Growth Better.
         </h1>
         <p className="home-hero__desc">
           Digital Marketing Enthusiast yang senang dengan banyak hal.
