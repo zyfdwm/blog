@@ -3,8 +3,63 @@ import { Client } from "@notionhq/client";
 
 const notionClient = notion as Client;
 
+async function getBlockChildrenRecursively(blockId: string): Promise<any[]> {
+  let allBlocks: any[] = [];
+  let cursor: string | undefined = undefined;
+
+  do {
+    const response: any = await notionClient.blocks.children.list({
+      block_id: blockId,
+      start_cursor: cursor,
+      page_size: 100,
+    });
+
+    const blocks = response.results || [];
+
+    for (const block of blocks) {
+      if (block.has_children) {
+        block.children = await getBlockChildrenRecursively(block.id);
+      }
+    }
+
+    allBlocks = [...allBlocks, ...blocks];
+    cursor = response.has_more ? response.next_cursor ?? undefined : undefined;
+  } while (cursor);
+
+  return allBlocks;
+}
+
+function extractPlainTextFromBlocks(blocks: any[]): string {
+  let text = "";
+
+  for (const block of blocks) {
+    const blockType = block.type;
+    const value = block[blockType];
+
+    if (value?.rich_text) {
+      text +=
+        " " +
+        value.rich_text.map((item: any) => item.plain_text || "").join(" ");
+    }
+
+    if (block.children?.length) {
+      text += " " + extractPlainTextFromBlocks(block.children);
+    }
+  }
+
+  return text.trim();
+}
+
+function calculateReadingTime(blocks: any[]): number {
+  const text = extractPlainTextFromBlocks(blocks);
+  const words = text.split(/\s+/).filter(Boolean).length;
+  const wordsPerMinute = 200;
+
+  return Math.max(1, Math.ceil(words / wordsPerMinute));
+}
+
 export default async function HomePage() {
-  const res = await (notion as any).databases.query({
+  const res = await notionClient.databases.query({
     database_id: databaseId,
     filter: {
       property: "Published",
@@ -12,22 +67,39 @@ export default async function HomePage() {
         equals: true,
       },
     },
+    sorts: [
+      {
+        property: "Date",
+        direction: "descending",
+      },
+    ],
   });
 
-  const posts = (res.results as any[]).map((post) => {
-    const props = post.properties;
+  const posts = await Promise.all(
+    (res.results as any[]).map(async (post) => {
+      const props = post.properties;
+      const coverFile = props.Cover?.files?.[0];
 
-    return {
-      id: post.id,
-      title: props.Title?.title?.[0]?.plain_text || "No title",
-      slug: props.Slug?.rich_text?.[0]?.plain_text || "",
-      date: props.Date?.date?.start || "",
-      description:
-        props.Description?.rich_text?.[0]?.plain_text || "",
-      tags: props.Tags?.multi_select?.map((tag: any) => tag.name) || [],
-      readingTime: 5,
-    };
-  });
+      const cover =
+        coverFile?.type === "external"
+          ? coverFile.external?.url
+          : coverFile?.file?.url || "";
+
+      const blocks = await getBlockChildrenRecursively(post.id);
+      const readingTime = calculateReadingTime(blocks);
+
+      return {
+        id: post.id,
+        title: props.Title?.title?.[0]?.plain_text || "No title",
+        slug: props.Slug?.rich_text?.[0]?.plain_text || "",
+        date: props.Date?.date?.start || "",
+        description: props.Description?.rich_text?.[0]?.plain_text || "",
+        tags: props.Tags?.multi_select?.map((tag: any) => tag.name) || [],
+        readingTime,
+        cover,
+      };
+    })
+  );
 
   return (
     <div className="container">
@@ -66,33 +138,49 @@ export default async function HomePage() {
         ) : (
           posts.map((post) => (
             <a key={post.id} href={`/${post.slug}`} className="post-card">
-              <div className="post-card__meta">
-                {post.date && (
-                  <span className="post-card__date">{post.date}</span>
-                )}
-                {post.date && (
-                  <span className="post-card__meta-dot" aria-hidden />
-                )}
-                <span className="post-card__reading-time">
-                  {post.readingTime} menit baca
-                </span>
-              </div>
-
-              <h2 className="post-card__title">{post.title}</h2>
-
-              {post.description && (
-                <p className="post-card__desc">{post.description}</p>
-              )}
-
-              {post.tags.length > 0 && (
-                <div className="post-card__tags">
-                  {post.tags.map((tag: string) => (
-                    <span key={tag} className="tag">
-                      {tag}
+              <div className="post-card__layout">
+                <div className="post-card__meta">
+                  {post.date && (
+                    <span className="post-card__date">{post.date}</span>
+                  )}
+                  {post.date && (
+                    <span className="post-card__meta-dot" aria-hidden>
+                      •
                     </span>
-                  ))}
+                  )}
+                  <span className="post-card__reading-time">
+                    {post.readingTime} menit baca
+                  </span>
                 </div>
-              )}
+
+                <h2 className="post-card__title">{post.title}</h2>
+
+                {post.tags.length > 0 && (
+                  <div className="post-card__tags">
+                    {post.tags.map((tag: string) => (
+                      <span key={tag} className="tag">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
+
+                {post.description && (
+                  <p className="post-card__desc">{post.description}</p>
+                )}
+
+                <div className="post-card__thumb">
+                  {post.cover ? (
+                    <img
+                      src={post.cover}
+                      alt={post.title}
+                      className="post-card__thumb-img"
+                    />
+                  ) : (
+                    <div className="post-card__thumb-placeholder" />
+                  )}
+                </div>
+              </div>
             </a>
           ))
         )}

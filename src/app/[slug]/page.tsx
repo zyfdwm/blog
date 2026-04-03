@@ -82,6 +82,16 @@ function getSlug(post: any) {
   return post.properties.Slug?.rich_text?.[0]?.plain_text || ''
 }
 
+function getCover(post: any) {
+  const coverFile = post.properties.Cover?.files?.[0]
+
+  if (!coverFile) return ''
+
+  return coverFile.type === 'external'
+    ? coverFile.external?.url || ''
+    : coverFile.file?.url || ''
+}
+
 export async function generateStaticParams() {
   const res: any = await notionClient.databases.query({
     database_id: databaseId,
@@ -111,6 +121,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const description = getPlainTextFromDescription(post)
   const date = getDate(post)
   const tags = getTags(post)
+  const cover = getCover(post)
 
   return {
     title,
@@ -126,15 +137,53 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       publishedTime: date,
       authors: ['Zyf'],
       tags,
+      images: cover
+        ? [
+          {
+            url: cover,
+            width: 1200,
+            height: 630,
+            alt: title,
+          },
+        ]
+        : [],
     },
     twitter: {
-      card: 'summary_large_image',
+      card: cover ? 'summary_large_image' : 'summary',
       title,
       description,
+      images: cover ? [cover] : [],
     },
   }
 }
+function extractPlainTextFromBlocks(blocks: any[]): string {
+  let text = ''
 
+  for (const block of blocks) {
+    const blockType = block.type
+    const value = block[blockType]
+
+    if (value?.rich_text) {
+      text +=
+        ' ' +
+        value.rich_text.map((item: any) => item.plain_text || '').join(' ')
+    }
+
+    if (block.children?.length) {
+      text += ' ' + extractPlainTextFromBlocks(block.children)
+    }
+  }
+
+  return text.trim()
+}
+
+function calculateReadingTime(blocks: any[]): number {
+  const text = extractPlainTextFromBlocks(blocks)
+  const words = text.split(/\s+/).filter(Boolean).length
+  const wordsPerMinute = 200
+
+  return Math.max(1, Math.ceil(words / wordsPerMinute))
+}
 export default async function PostPage({ params }: Props) {
   const { slug } = await params
   const post = await getPostBySlug(slug)
@@ -142,11 +191,12 @@ export default async function PostPage({ params }: Props) {
   if (!post) notFound()
 
   const blocks = await getBlockChildrenRecursively(post.id)
-
+  const readingTime = calculateReadingTime(blocks)
   const title = getPlainTextFromTitle(post)
   const description = getPlainTextFromDescription(post)
   const date = getDate(post)
   const tags = getTags(post)
+  const cover = getCover(post)
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -154,6 +204,7 @@ export default async function PostPage({ params }: Props) {
     headline: title,
     description,
     datePublished: date,
+    image: cover || undefined,
     author: {
       '@type': 'Person',
       name: 'Zyf',
@@ -200,7 +251,7 @@ export default async function PostPage({ params }: Props) {
                 •
               </span>
             )}
-            <span>5 menit baca</span>
+            <span>{readingTime} menit baca</span>
           </div>
         </header>
 

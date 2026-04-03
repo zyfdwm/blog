@@ -46,6 +46,80 @@ a {
   text-decoration: none;
 }
 
+.post-card__layout {
+  display: grid;
+  grid-template-columns: 1fr 180px;
+  grid-template-areas:
+    "meta thumb"
+    "title thumb"
+    "desc thumb"
+    "tags thumb";
+  gap: 0.75rem 1.5rem;
+  align-items: start;
+}
+
+.post-card__meta {
+  grid-area: meta;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.post-card__title {
+  grid-area: title;
+}
+
+.post-card__desc {
+  grid-area: desc;
+}
+
+.post-card__tags {
+  grid-area: tags;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.post-card__thumb {
+  grid-area: thumb;
+  width: 180px;
+  height: 180px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.05);
+  flex-shrink: 0;
+}
+
+.post-card__thumb-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.post-card__thumb-placeholder {
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+@media (max-width: 768px) {
+  .post-card__layout {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "title"
+      "meta"
+      "tags"
+      "thumb"
+      "desc";
+  }
+
+  .post-card__thumb {
+    width: 100%;
+    height: 220px;
+  }
+}
+
 /* ─── HEADER ─────────────────────────────────────────── */
 .site-header {
   position: sticky;
@@ -183,12 +257,12 @@ a {
   color: var(--text-muted);
 }
 
-.post-card__meta-dot {
+/* .post-card__meta-dot {
   width: 2px;
   height: 2px;
   border-radius: 50%;
   background: var(--text-muted);
-}
+} */
 
 .post-card__title {
   font-family: var(--font-heading);
@@ -472,6 +546,26 @@ a {
 .notion-bg-red {
   padding: 0.1rem 0.3rem;
   border-radius: 0.35rem;
+}
+
+.article-cover {
+  margin: 1.25rem 0 1.5rem;
+  border-radius: 16px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.article-cover__img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+}
+
+.article-cover__img {
+  max-height: 420px;
+  width: 100%;
+  object-fit: cover;
 }
 
 /* ─── ARTICLE CONTENT ────────────────────────────────── */
