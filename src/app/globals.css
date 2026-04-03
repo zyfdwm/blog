@@ -572,8 +572,7 @@ a {
 }
 
 .article-content a {
-  color: var(--text-primary);
-  text-decoration: underline;
+  color: #3e9b11;
   text-underline-offset: 3px;
   text-decoration-color: var(--border);
   transition: text-decoration-color 0.2s;
@@ -581,6 +580,7 @@ a {
 
 .article-content a:hover {
   text-decoration-color: var(--text-primary);
+  color: #2b7008;
 }
 
 .article-content hr {
