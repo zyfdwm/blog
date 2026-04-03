@@ -176,15 +176,22 @@ function renderBlock(block: Block) {
 
         case 'image': {
             const image = block.image
-            const src =
-                image?.type === 'external'
-                    ? image.external?.url
-                    : image?.file?.url
+            const isExternal = image?.type === 'external'
+            const src = isExternal ? image.external?.url : ''
 
             const caption =
                 image?.caption?.map((t: any) => t.plain_text).join('') || ''
 
-            if (!src) return null
+            if (!src) {
+                return (
+                    <figure key={id} className="notion-image notion-image--missing">
+                        <div className="notion-image__placeholder">
+                            Gambar tidak tersedia. Gunakan external/public image URL.
+                        </div>
+                        {caption ? <figcaption>{caption}</figcaption> : null}
+                    </figure>
+                )
+            }
 
             return (
                 <figure key={id} className="notion-image">

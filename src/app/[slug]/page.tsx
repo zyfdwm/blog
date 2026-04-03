@@ -83,13 +83,44 @@ function getSlug(post: any) {
 }
 
 function getCover(post: any) {
+  const coverUrl = post.properties.CoverUrl?.url || ''
   const coverFile = post.properties.Cover?.files?.[0]
 
-  if (!coverFile) return ''
+  return (
+    coverUrl ||
+    (coverFile?.type === 'external'
+      ? coverFile.external?.url || ''
+      : '')
+  )
+}
 
-  return coverFile.type === 'external'
-    ? coverFile.external?.url || ''
-    : coverFile.file?.url || ''
+function extractPlainTextFromBlocks(blocks: any[]): string {
+  let text = ''
+
+  for (const block of blocks) {
+    const blockType = block.type
+    const value = block[blockType]
+
+    if (value?.rich_text) {
+      text +=
+        ' ' +
+        value.rich_text.map((item: any) => item.plain_text || '').join(' ')
+    }
+
+    if (block.children?.length) {
+      text += ' ' + extractPlainTextFromBlocks(block.children)
+    }
+  }
+
+  return text.trim()
+}
+
+function calculateReadingTime(blocks: any[]): number {
+  const text = extractPlainTextFromBlocks(blocks)
+  const words = text.split(/\s+/).filter(Boolean).length
+  const wordsPerMinute = 200
+
+  return Math.max(1, Math.ceil(words / wordsPerMinute))
 }
 
 export async function generateStaticParams() {
@@ -156,34 +187,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     },
   }
 }
-function extractPlainTextFromBlocks(blocks: any[]): string {
-  let text = ''
 
-  for (const block of blocks) {
-    const blockType = block.type
-    const value = block[blockType]
-
-    if (value?.rich_text) {
-      text +=
-        ' ' +
-        value.rich_text.map((item: any) => item.plain_text || '').join(' ')
-    }
-
-    if (block.children?.length) {
-      text += ' ' + extractPlainTextFromBlocks(block.children)
-    }
-  }
-
-  return text.trim()
-}
-
-function calculateReadingTime(blocks: any[]): number {
-  const text = extractPlainTextFromBlocks(blocks)
-  const words = text.split(/\s+/).filter(Boolean).length
-  const wordsPerMinute = 200
-
-  return Math.max(1, Math.ceil(words / wordsPerMinute))
-}
 export default async function PostPage({ params }: Props) {
   const { slug } = await params
   const post = await getPostBySlug(slug)

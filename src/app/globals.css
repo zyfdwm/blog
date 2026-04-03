@@ -120,6 +120,15 @@ a {
   }
 }
 
+.notion-image--missing .notion-image__placeholder {
+  padding: 1rem;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #888;
+  font-size: 0.95rem;
+  text-align: center;
+}
+
 /* ─── HEADER ─────────────────────────────────────────── */
 .site-header {
   position: sticky;

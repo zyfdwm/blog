@@ -78,12 +78,13 @@ export default async function HomePage() {
   const posts = await Promise.all(
     (res.results as any[]).map(async (post) => {
       const props = post.properties;
+
+      const coverUrl = props.CoverUrl?.url || "";
       const coverFile = props.Cover?.files?.[0];
 
       const cover =
-        coverFile?.type === "external"
-          ? coverFile.external?.url
-          : coverFile?.file?.url || "";
+        coverUrl ||
+        (coverFile?.type === "external" ? coverFile.external?.url || "" : "");
 
       const blocks = await getBlockChildrenRecursively(post.id);
       const readingTime = calculateReadingTime(blocks);
