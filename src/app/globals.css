@@ -236,7 +236,7 @@ a {
 
 /* ─── ARTICLE PAGE ───────────────────────────────────── */
 .article-header {
-  padding: 3.5rem 0 2.5rem;
+  padding: 3.5rem 0 0;
 }
 
 .article-tags {
