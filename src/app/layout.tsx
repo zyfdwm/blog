@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import './globals.css'
 
+
 export const metadata: Metadata = {
   metadataBase: new URL('https://zyfspace.pages.dev'),
   title: {
@@ -8,6 +9,9 @@ export const metadata: Metadata = {
     template: '%s - Exploring SEO & Digital Growth ·',
   },
   description: 'Talking about Digital Marketing, SEO, Paid Channel, and How Business Growth through Digital',
+  icons: {
+    icon: '/icon.svg',
+  },
   alternates: {
     canonical: '/',
   },
