@@ -1,61 +1,161 @@
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
-import { getAllSlugs, getPost, formatDate } from '@/lib/posts'
-import { markdownToHtml } from '@/lib/markdown'
+import type { Client } from '@notionhq/client'
+import { notion, databaseId } from '@/lib/notion'
+import NotionBlocks from '@/components/NotionBlocks'
 
-type Props = { params: Promise<{ slug: string }> }
+const notionClient = notion as Client
+
+type Props = {
+  params: {
+    slug: string
+  }
+}
+
+async function getPostBySlug(slug: string) {
+  const res: any = await notionClient.databases.query({
+    database_id: databaseId,
+    filter: {
+      and: [
+        {
+          property: 'Slug',
+          rich_text: {
+            equals: slug,
+          },
+        },
+        {
+          property: 'Published',
+          checkbox: {
+            equals: true,
+          },
+        },
+      ],
+    },
+  })
+
+  return res.results?.[0] || null
+}
+
+async function getBlockChildrenRecursively(blockId: string): Promise<any[]> {
+  let allBlocks: any[] = []
+  let cursor: string | undefined = undefined
+
+  do {
+    const response: any = await notionClient.blocks.children.list({
+      block_id: blockId,
+      start_cursor: cursor,
+      page_size: 100,
+    })
+
+    const blocks = response.results || []
+
+    for (const block of blocks) {
+      if (block.has_children) {
+        block.children = await getBlockChildrenRecursively(block.id)
+      }
+    }
+
+    allBlocks = [...allBlocks, ...blocks]
+    cursor = response.has_more ? response.next_cursor ?? undefined : undefined
+  } while (cursor)
+
+  return allBlocks
+}
+
+function getPlainTextFromTitle(post: any) {
+  return post.properties.Title?.title?.[0]?.plain_text || ''
+}
+
+function getPlainTextFromDescription(post: any) {
+  return post.properties.Description?.rich_text?.[0]?.plain_text || ''
+}
+
+function getDate(post: any) {
+  return post.properties.Date?.date?.start || ''
+}
+
+function getTags(post: any) {
+  return post.properties.Tags?.multi_select?.map((tag: any) => tag.name) || []
+}
+
+function getSlug(post: any) {
+  return post.properties.Slug?.rich_text?.[0]?.plain_text || ''
+}
 
 export async function generateStaticParams() {
-  return getAllSlugs().map((slug) => ({ slug }))
+  const res: any = await notionClient.databases.query({
+    database_id: databaseId,
+    filter: {
+      property: 'Published',
+      checkbox: {
+        equals: true,
+      },
+    },
+    page_size: 100,
+  })
+
+  return (res.results as any[])
+    .map((post) => ({
+      slug: getSlug(post),
+    }))
+    .filter((item) => item.slug)
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params
-  const slugs = getAllSlugs()
-  if (!slugs.includes(slug)) return {}
-  const post = getPost(slug)
+  const post = await getPostBySlug(params.slug)
+  if (!post) return {}
+
+  const title = getPlainTextFromTitle(post)
+  const description = getPlainTextFromDescription(post)
+  const date = getDate(post)
+  const tags = getTags(post)
+
   return {
-    title: post.title,
-    description: post.description,
+    title,
+    description,
     alternates: {
-      canonical: `/${slug}`,
+      canonical: `/blog/${params.slug}`,
     },
     openGraph: {
-      title: post.title,
-      description: post.description,
-      url: `https://zyfspace.pages.dev/${slug}`,
+      title,
+      description,
+      url: `https://zyfspace.pages.dev/blog/${params.slug}`,
       type: 'article',
-      publishedTime: post.date,
+      publishedTime: date,
       authors: ['Zyf'],
-      tags: post.tags,
+      tags,
     },
     twitter: {
       card: 'summary_large_image',
-      title: post.title,
-      description: post.description,
+      title,
+      description,
     },
   }
 }
 
 export default async function PostPage({ params }: Props) {
-  const { slug } = await params
-  const slugs = getAllSlugs()
-  if (!slugs.includes(slug)) notFound()
+  const post = await getPostBySlug(params.slug)
+  if (!post) notFound()
 
-  const post = getPost(slug)
-  const contentHtml = await markdownToHtml(post.content)
+  const blocks = await getBlockChildrenRecursively(post.id)
+
+  const title = getPlainTextFromTitle(post)
+  const description = getPlainTextFromDescription(post)
+  const date = getDate(post)
+  const tags = getTags(post)
 
   const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "BlogPosting",
-    "headline": post.title,
-    "description": post.description,
-    "datePublished": post.date,
-    "author": {
-      "@type": "Person",
-      "name": "Zyf"
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: title,
+    description,
+    datePublished: date,
+    author: {
+      '@type': 'Person',
+      name: 'Zyf',
     },
-    "url": `https://zyfspace.pages.dev/${slug}`
+    url: `https://zyfspace.pages.dev/blog/${params.slug}`,
+    keywords: tags.join(', '),
   }
 
   return (
@@ -64,39 +164,41 @@ export default async function PostPage({ params }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
+
       <a href="/" className="back-link">
         ← Semua artikel
       </a>
 
       <article>
         <header className="article-header">
-          {post.tags.length > 0 && (
+          {tags.length > 0 && (
             <div className="article-tags">
-              {post.tags.map((tag) => (
-                <span key={tag} className="tag">{tag}</span>
+              {tags.map((tag: string) => (
+                <span key={tag} className="tag">
+                  {tag}
+                </span>
               ))}
             </div>
           )}
 
-          <h1 className="article-title">{post.title}</h1>
+          <h1 className="article-title">{title}</h1>
 
-          {post.description && (
-            <p className="article-desc">{post.description}</p>
+          {description && (
+            <p className="article-desc">
+              {description}
+            </p>
           )}
 
           <div className="article-meta">
-            {post.date && (
-              <span>{formatDate(post.date)}</span>
-            )}
-            {post.date && <span className="article-meta-dot" aria-hidden />}
-            <span>{post.readingTime} menit baca</span>
+            {date && <span>{date}</span>}
+            {date && <span className="article-meta-dot" aria-hidden />}
+            <span>5 menit baca</span>
           </div>
         </header>
 
-        <div
-          className="article-content"
-          dangerouslySetInnerHTML={{ __html: contentHtml }}
-        />
+        <div className="article-content">
+          <NotionBlocks blocks={blocks} />
+        </div>
       </article>
     </div>
   )
