@@ -29,6 +29,7 @@
 }
 
 html {
+  scroll-behavior: smooth;
   font-size: 18px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -323,6 +324,54 @@ a {
 }
 
 /* Notion-like multi-select colors */
+.notion-image__clickable {
+  cursor: zoom-in;
+}
+
+.notion-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0.82);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.notion-lightbox__content {
+  position: relative;
+  max-width: 95vw;
+  max-height: 90vh;
+}
+
+.notion-lightbox__image {
+  display: block;
+  max-width: 95vw;
+  max-height: 90vh;
+  width: auto;
+  height: auto;
+  border-radius: 12px;
+  object-fit: contain;
+  box-shadow: 0 20px 80px rgba(0, 0, 0, 0.35);
+}
+
+.notion-lightbox__close {
+  position: absolute;
+  top: -0.75rem;
+  right: -0.75rem;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: none;
+  border-radius: 999px;
+  background: white;
+  color: black;
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
 .notion-tag--gray {
   background: #9b9a97;
   color: white;
@@ -366,6 +415,52 @@ a {
 .notion-tag--red {
   background: #e25555;
   color: white;
+}
+
+/* --- Notion TOC ---*/
+.notion-toc {
+  margin: 1.5rem 0;
+  padding: 1rem 1.25rem;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.notion-toc__title {
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+}
+
+.notion-toc__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.notion-toc__item {
+  margin: 0.35rem 0;
+}
+
+.notion-toc__item--level-1 {
+  padding-left: 0;
+}
+
+.notion-toc__item--level-2 {
+  padding-left: 1rem;
+}
+
+.notion-toc__item--level-3 {
+  padding-left: 2rem;
+}
+
+.notion-toc__link {
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.notion-toc__link:hover {
+  color: var(--text-primary);
 }
 
 /* ─── ARTICLE PAGE ───────────────────────────────────── */
