@@ -289,7 +289,7 @@ a {
 }
 
 .post-card__desc {
-  font-size: 0.95rem;
+  font-size: 16px;
   color: var(--text-secondary);
   line-height: 1.65;
   margin-bottom: 0.85rem;
@@ -306,15 +306,66 @@ a {
   gap: 0.4rem;
 }
 
-.tag {
+.tag.notion-tag {
+  text-transform: none;
+  letter-spacing: 0;
   font-size: 0.72rem;
   font-weight: 500;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  padding: 0.2rem 0.65rem;
-  background: var(--tag-bg);
-  color: var(--tag-text);
-  border-radius: 2rem;
+  padding: 0.22rem 0.65rem;
+  border-radius: 5px;
+  border: none;
+}
+
+/* default */
+.notion-tag--default {
+  background: #e9e7e1;
+  color: #4b4b4b;
+}
+
+/* Notion-like multi-select colors */
+.notion-tag--gray {
+  background: #9b9a97;
+  color: white;
+}
+
+.notion-tag--brown {
+  background: #937264;
+  color: white;
+}
+
+.notion-tag--orange {
+  background: #ffa344;
+  color: white;
+}
+
+.notion-tag--yellow {
+  background: #ffdc49;
+  color: #4b3b00;
+}
+
+.notion-tag--green {
+  background: #4dab7c;
+  color: white;
+}
+
+.notion-tag--blue {
+  background: #529cca;
+  color: white;
+}
+
+.notion-tag--purple {
+  background: #9a6dd7;
+  color: white;
+}
+
+.notion-tag--pink {
+  background: #c14c8a;
+  color: white;
+}
+
+.notion-tag--red {
+  background: #e25555;
+  color: white;
 }
 
 /* ─── ARTICLE PAGE ───────────────────────────────────── */
@@ -342,7 +393,6 @@ a {
 .article-desc {
   font-family: var(--font-body);
   font-size: 1rem;
-  font-style: italic;
   color: var(--text-secondary);
   line-height: 1.6;
   margin-bottom: 1.5rem;
@@ -581,7 +631,7 @@ a {
 .article-content {
   padding: 2.5rem 0 5rem;
   font-family: var(--font-body);
-  font-size: 1.05rem;
+  font-size: 16px;
   line-height: 1.85;
   color: var(--text-primary);
 }

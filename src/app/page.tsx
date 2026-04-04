@@ -57,7 +57,15 @@ function calculateReadingTime(blocks: any[]): number {
 
   return Math.max(1, Math.ceil(words / wordsPerMinute));
 }
+function formatDate(dateString: string) {
+  if (!dateString) return ''
 
+  return new Date(dateString).toLocaleDateString('id-ID', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  })
+}
 export default async function HomePage() {
   const res = await notionClient.databases.query({
     database_id: databaseId,
@@ -95,7 +103,11 @@ export default async function HomePage() {
         slug: props.Slug?.rich_text?.[0]?.plain_text || "",
         date: props.Date?.date?.start || "",
         description: props.Description?.rich_text?.[0]?.plain_text || "",
-        tags: props.Tags?.multi_select?.map((tag: any) => tag.name) || [],
+        tags:
+          props.Tags?.multi_select?.map((tag: any) => ({
+            name: tag.name,
+            color: tag.color,
+          })) || [],
         readingTime,
         cover,
       };
@@ -142,15 +154,15 @@ export default async function HomePage() {
               <div className="post-card__layout">
                 <div className="post-card__meta">
                   {post.date && (
-                    <span className="post-card__date">{post.date}</span>
+                    <span className="post-card__date">{formatDate(post.date)}</span>
                   )}
                   {post.date && (
-                    <span className="post-card__meta-dot" aria-hidden>
-                      •
+                    <span className="post-card__meta-dot" style={{ color: 'var(--text-muted)' }} aria-hidden>
+                      /
                     </span>
                   )}
                   <span className="post-card__reading-time">
-                    {post.readingTime} menit baca
+                    {post.readingTime} Min Reads
                   </span>
                 </div>
 
@@ -158,9 +170,12 @@ export default async function HomePage() {
 
                 {post.tags.length > 0 && (
                   <div className="post-card__tags">
-                    {post.tags.map((tag: string) => (
-                      <span key={tag} className="tag">
-                        {tag}
+                    {post.tags.map((tag: { name: string; color: string }) => (
+                      <span
+                        key={tag.name}
+                        className={`tag notion-tag notion-tag--${tag.color || 'default'}`}
+                      >
+                        {tag.name}
                       </span>
                     ))}
                   </div>

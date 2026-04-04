@@ -11,7 +11,15 @@ type Props = {
     slug: string
   }>
 }
+function formatDate(dateString: string) {
+  if (!dateString) return ''
 
+  return new Date(dateString).toLocaleDateString('id-ID', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  })
+}
 async function getPostBySlug(slug: string) {
   const res: any = await notionClient.databases.query({
     database_id: databaseId,
@@ -75,7 +83,12 @@ function getDate(post: any) {
 }
 
 function getTags(post: any) {
-  return post.properties.Tags?.multi_select?.map((tag: any) => tag.name) || []
+  return (
+    post.properties.Tags?.multi_select?.map((tag: any) => ({
+      name: tag.name,
+      color: tag.color,
+    })) || []
+  )
 }
 
 function getSlug(post: any) {
@@ -151,7 +164,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const title = getPlainTextFromTitle(post)
   const description = getPlainTextFromDescription(post)
   const date = getDate(post)
-  const tags = getTags(post)
+  const tags = getTags(post).map((tag: { name: string }) => tag.name)
   const cover = getCover(post)
 
   return {
@@ -214,7 +227,7 @@ export default async function PostPage({ params }: Props) {
       name: 'Zyf',
     },
     url: `https://zyfspace.pages.dev/${slug}`,
-    keywords: tags.join(', '),
+    keywords: tags.map((tag: { name: string }) => tag.name).join(', '),
   }
 
   return (
@@ -232,9 +245,12 @@ export default async function PostPage({ params }: Props) {
         <header className="article-header">
           {tags.length > 0 && (
             <div className="article-tags">
-              {tags.map((tag: string) => (
-                <span key={tag} className="tag">
-                  {tag}
+              {tags.map((tag: { name: string; color: string }) => (
+                <span
+                  key={tag.name}
+                  className={`tag notion-tag notion-tag--${tag.color || 'default'}`}
+                >
+                  {tag.name}
                 </span>
               ))}
             </div>
@@ -249,13 +265,13 @@ export default async function PostPage({ params }: Props) {
           )}
 
           <div className="article-meta">
-            {date && <span>{date}</span>}
+            {date && <span>{formatDate(date)}</span>}
             {date && (
               <span className="article-meta-dot" aria-hidden>
-                •
+                /
               </span>
             )}
-            <span>{readingTime} menit baca</span>
+            <span>{readingTime} Min Reads</span>
           </div>
         </header>
 
