@@ -416,6 +416,7 @@ a {
 }
 
 /* - Notion -- */
+
 .notion-blocks {
   line-height: 1.8;
 }
@@ -495,11 +496,99 @@ a {
 }
 
 .notion-callout {
+  display: flex;
+  gap: 0.75rem;
   margin: 1.25rem 0;
   padding: 1rem;
   border-radius: 12px;
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(0 0 0 / 6%);
   border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.notion-callout-icon {
+  font-size: 1.25rem;
+  line-height: 1.4;
+}
+
+.notion-callout-icon-image {
+  width: 1.5rem;
+  height: 1.5rem;
+  object-fit: contain;
+}
+
+.notion-callout-content {
+  flex: 1;
+}
+
+.notion-toggle summary {
+  cursor: pointer;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.notion-bookmark-link,
+.notion-file-link {
+  display: block;
+  padding: 1rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
+  text-decoration: none;
+}
+
+.notion-bookmark-url {
+  color: #60a5fa;
+  word-break: break-all;
+}
+
+.notion-bookmark-caption {
+  margin-top: 0.35rem;
+  color: #aaa;
+  font-size: 0.95rem;
+}
+
+.notion-file-block {
+  margin: 1rem 0;
+}
+
+.notion-table-wrapper {
+  overflow-x: auto;
+  margin: 1.5rem 0;
+}
+
+.notion-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.notion-table td {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 0.75rem;
+  vertical-align: top;
+}
+
+.notion-child-page,
+.notion-unsupported,
+.notion-embed,
+.notion-equation {
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.notion-video video {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  border-radius: 12px;
+}
+
+.notion-media-caption {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: #aaa;
+  text-align: center;
 }
 
 .notion-image {
@@ -683,10 +772,12 @@ a {
 .article-content blockquote {
   border-left: 3px solid var(--text-primary);
   margin: 2em 0;
-  padding: 0.5em 0 0.5em 1.5em;
-  font-style: italic;
-  font-size: 1.15rem;
-  color: var(--text-secondary);
+  padding: 20px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #000;
+  background: #ebebe9;
+  border-radius: 12px;
 }
 
 .article-content blockquote p {
