@@ -323,6 +323,99 @@ a {
   color: #4b4b4b;
 }
 
+/* notion bookmark */
+.notion-bookmark-card {
+  display: grid;
+  grid-template-columns: 1fr 120px;
+  gap: 1rem;
+  align-items: stretch;
+  padding: 1rem 1.1rem;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  transition: border-color 0.2s ease, transform 0.2s ease, background 0.2s ease;
+  text-decoration: none;
+}
+
+.notion-bookmark-card:hover {
+  border-color: #d8d8d2;
+  transform: translateY(-1px);
+  background: #fff;
+}
+
+.notion-bookmark-card__content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.45rem;
+  min-width: 0;
+}
+
+.notion-bookmark-card__title {
+  font-size: 0.96rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--text-primary);
+  word-break: break-word;
+}
+
+.notion-bookmark-card__desc {
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  word-break: break-word;
+  display: -webkit-box;
+  line-clamp: 2;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.notion-bookmark-card__meta {
+  margin-top: 0.15rem;
+}
+
+.notion-bookmark-card__site {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.76rem;
+  color: var(--text-muted);
+}
+
+.notion-bookmark-card__preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 96px;
+  border-radius: 12px;
+  background: var(--bg-alt);
+  overflow: hidden;
+}
+
+.notion-bookmark-card__preview-badge {
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.04);
+}
+
+@media (max-width: 640px) {
+  .notion-bookmark-card {
+    grid-template-columns: 1fr;
+  }
+
+  .notion-bookmark-card__preview {
+    min-height: 72px;
+  }
+}
+
 /* Notion-like multi-select colors */
 .notion-image__clickable {
   cursor: zoom-in;

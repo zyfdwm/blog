@@ -504,11 +504,40 @@ export default function NotionBlocks({ blocks }: { blocks: Block[] }) {
 
                 if (!url) return null
 
+                let hostname = ''
+                let displayUrl = url
+
+                try {
+                    const parsed = new URL(url)
+                    hostname = parsed.hostname.replace('www.', '')
+                    displayUrl = parsed.href
+                } catch {
+                    hostname = url
+                }
+
+                const title = caption || hostname
+
                 return (
                     <div key={id} className="notion-block notion-bookmark">
-                        <a href={url} target="_blank" rel="noreferrer" className="notion-bookmark-link">
-                            <div className="notion-bookmark-url">{url}</div>
-                            {caption ? <div className="notion-bookmark-caption">{caption}</div> : null}
+                        <a
+                            href={url}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="notion-bookmark-card"
+                        >
+                            <div className="notion-bookmark-card__content">
+                                <div className="notion-bookmark-card__title">{title}</div>
+                                <div className="notion-bookmark-card__desc">{displayUrl}</div>
+                                <div className="notion-bookmark-card__meta">
+                                    <span className="notion-bookmark-card__site">{hostname}</span>
+                                </div>
+                            </div>
+
+                            <div className="notion-bookmark-card__preview">
+                                <div className="notion-bookmark-card__preview-badge">
+                                    ↗
+                                </div>
+                            </div>
                         </a>
                     </div>
                 )
