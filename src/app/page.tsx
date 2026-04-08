@@ -134,7 +134,7 @@ export default async function HomePage() {
             name: "Zyf - Exploring SEO & Digital Growth",
             url: "https://zyfspace.pages.dev",
             description:
-              "Zyf Space - an Personal blog That Talking about SEO, Tech, Digital Marketing, and How Business Growth Better through Digital Marketing",
+              "Zyf Space is an Personal blog That Talking about SEO, Tech, Digital Marketing, and How Business Growth Better through Digital Marketing",
             author: {
               "@type": "Person",
               name: "Zyf",
